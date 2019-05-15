@@ -28,6 +28,6 @@ namespace E_rturkTeknoloji.Controllers
             return View(products);
             
         }
-        // deneme
+        // deneme/2/2/2
     }
 }
