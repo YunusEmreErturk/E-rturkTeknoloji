@@ -5,7 +5,7 @@ using System.Web;
 
 namespace E_rturkTeknoloji.Entity
 {
-    public class Order
+    public class OrderHeader
     {
     }
 }
