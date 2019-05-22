@@ -10,6 +10,7 @@ using E_rturkTeknoloji.Entity;
 
 namespace E_rturkTeknoloji.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class CategoryController : Controller
     {
         private DataContext db = new DataContext();
