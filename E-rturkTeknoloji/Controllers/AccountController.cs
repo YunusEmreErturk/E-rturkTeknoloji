@@ -74,7 +74,6 @@ namespace E_rturkTeknoloji.Controllers
                 if (user != null)
                 {
                     //varolan kullanıcıyı sisteme dahil et
-                    //ApplicationCookie oluşturup sisteme bırak
 
                     var authManager = HttpContext.GetOwinContext().Authentication;
 
