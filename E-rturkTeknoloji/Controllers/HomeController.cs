@@ -11,57 +11,57 @@ namespace E_rturkTeknoloji.Controllers
     public class HomeController : Controller
     {
         DataContext _context = new DataContext();
+
         // GET: Home
         public ActionResult Index()
         {
-            var products = _context.Products
-                .Where(x => x.IsApproved && x.IsHome)
-                .Select(x => new ProductModel()
+            var urunler = _context.Products
+                .Where(i => i.IsHome && i.IsApproved)
+                .Select(i => new ProductModel()
                 {
-                    Id = x.Id,
-                    Name = x.Name.Length > 50 ? x.Name.Substring(0,47)+"...":x.Name,
-                    Description = x.Description.Length > 50 ? x.Description.Substring(0,47)+"...":x.Description,
-                    Price = x.Price,
-                    Image = x.Image == null ? "1.jpg" : x.Image,
-                    Stock = x.Stock,
-                    CategoryId = x.CategoryId
-                    
+                    Id = i.Id,
+                    Name = i.Name.Length > 50 ? i.Name.Substring(0, 47) + "..." : i.Name,
+                    Description = i.Description.Length > 50 ? i.Description.Substring(0, 47) + "..." : i.Description,
+                    Price = i.Price,
+                    Stock = i.Stock,
+                    Image = i.Image,
+                    CategoryId = i.CategoryId
                 }).ToList();
-            return View(products);
+
+            return View(urunler);
         }
+
         public ActionResult Details(int id)
         {
-            var productDetail = _context.Products.Where(i => i.Id == id).FirstOrDefault();
-
-            return View(productDetail);
+            return View(_context.Products.Where(i => i.Id == id).FirstOrDefault());
         }
+
         public ActionResult List(int? id)
         {
-            var products = _context.Products
-               .Where(x => x.IsApproved)
-               .Select(x => new ProductModel()
-               {
-                   Id = x.Id,
-                   Name = x.Name.Length > 50 ? x.Name.Substring(0, 47) + "..." : x.Name,
-                   Description = x.Description.Length > 50 ? x.Description.Substring(0, 47) + "..." : x.Description,
-                   Price = x.Price,
-                   Image = x.Image == null ? "1.jpg":x.Image,
-                   Stock = x.Stock,
-                   CategoryId = x.CategoryId
+            var urunler = _context.Products
+                .Where(i => i.IsApproved)
+                .Select(i => new ProductModel()
+                {
+                    Id = i.Id,
+                    Name = i.Name.Length > 50 ? i.Name.Substring(0, 47) + "..." : i.Name,
+                    Description = i.Description.Length > 50 ? i.Description.Substring(0, 47) + "..." : i.Description,
+                    Price = i.Price,
+                    Stock = i.Stock,
+                    Image = i.Image ?? "1.jpg",
+                    CategoryId = i.CategoryId
+                }).AsQueryable();
 
-               }).AsQueryable(); //sorgulamaya devam edebilirim.
-            if (id !=null)
+            if (id != null)
             {
-                products = products.Where(i => i.CategoryId == id);
+                urunler = urunler.Where(i => i.CategoryId == id);
             }
-            return View(products);
 
+            return View(urunler.ToList());
         }
 
         public PartialViewResult GetCategories()
         {
             return PartialView(_context.Categories.ToList());
         }
-        // deneme/2/2/2
     }
 }
