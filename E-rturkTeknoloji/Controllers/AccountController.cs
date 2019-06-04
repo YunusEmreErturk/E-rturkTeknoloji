@@ -1,4 +1,5 @@
-﻿using E_rturkTeknoloji.Identity;
+﻿using E_rturkTeknoloji.Entity;
+using E_rturkTeknoloji.Identity;
 using E_rturkTeknoloji.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -14,6 +15,7 @@ namespace E_rturkTeknoloji.Controllers
     
     public class AccountController : Controller
     {
+        private DataContext db = new DataContext();
         private UserManager<ApplicationUser> UserManager;
         private RoleManager<ApplicationRole> RoleManager;
 
@@ -27,6 +29,51 @@ namespace E_rturkTeknoloji.Controllers
 
         }
 
+        [Authorize]
+        public ActionResult Index()
+        {
+            var orders = db.Orders
+                .Where(i => i.Username == User.Identity.Name)
+                .Select(i => new UserOrderModel()
+                {
+                    Id = i.Id,
+                    OrderNumber = i.OrderNumber,
+                    OrderDate = i.OrderDate,
+                    OrderState = i.OrderState,
+                    Total = i.Total
+                }).OrderByDescending(i=>i.OrderDate).ToList();
+                
+
+            return View(orders);
+        }
+        [Authorize]
+        public ActionResult Details(int id)
+        {
+            var entity = db.Orders.Where(i => i.Id == id)
+                .Select(i => new OrderDetailsModel()
+                {
+                    OrderId = i.Id,
+                    OrderNumber = i.OrderNumber,
+                    Total = i.Total,
+                    OrderDate = i.OrderDate,
+                    OrderState = i.OrderState,
+                    AdresBasligi = i.AdresBasligi,
+                    Adres = i.Adres,
+                    Sehir = i.Sehir,
+                    Semt = i.Semt,
+                    Mahalle =i.Mahalle,                    
+                    OrderLines = i.OrderLines.Select(x => new OrderLineModel()
+                    {
+                        ProductId = x.ProductId,
+                        ProductName = x.Product.Name.Length>50?x.Product.Name.Substring(0,47)+"...":x.Product.Name,
+                        Image = x.Product.Image,
+                        Quantity = x.Quantity,
+                        Price = x.Price
+                    }).ToList()
+
+                }).FirstOrDefault();
+            return View(entity);
+        }
         // GET: Account
         public ActionResult Register()
         {

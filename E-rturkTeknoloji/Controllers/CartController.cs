@@ -92,7 +92,9 @@ namespace E_rturkTeknoloji.Controllers
             order.OrderNumber = "C" + (new Random()).Next(11111, 99999).ToString();
             order.Total = cart.Total();
             order.OrderDate = DateTime.Now;
-            order.Username = entity.Username;
+            order.OrderState = EnumOrderState.Waiting;
+            order.Username = User.Identity.Name; 
+
             order.AdresBasligi = entity.AdresBasligi;
             order.Adres = entity.Adres;
             order.Sehir = entity.Sehir;
